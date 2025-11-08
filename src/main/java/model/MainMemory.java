@@ -6,30 +6,28 @@ import java.util.List;
 import static utils.Utils.*;
 
 public class MainMemory {
-    //size is expressed in bytes
-    private int mainMemorySize;
+    private long mainMemorySizeInBytes;
     private List<String> mainMemoryLines  = new ArrayList<>();
-    private int noLines;
-    private int tagSize;
+    private long noLines;
+    private int tagSize = -1;
 
 
     public MainMemory() {}
 
-    public MainMemory(int mainMemorySize) {
-        this.mainMemorySize = mainMemorySize;
-        this.noLines = mainMemorySize/BLOCK_SIZE;
+    public MainMemory(long mainMemorySizeInBytes) {
+        this.mainMemorySizeInBytes = mainMemorySizeInBytes;
+        this.noLines = mainMemorySizeInBytes/BLOCK_SIZE;
         for (int i = 0; i < noLines; i++) {
             mainMemoryLines.add(initializeMainMemoryLineData(BLOCK_SIZE));
         }
     }
 
-
     public void setMainMemoryLines(List<String> mainMemoryLines) {
         this.mainMemoryLines = mainMemoryLines;
     }
 
-    public void setMainMemorySize(int mainMemorySize) {
-        this.mainMemorySize = mainMemorySize;
+    public void setMainMemorySizeInBytes(int mainMemorySizeInBytes) {
+        this.mainMemorySizeInBytes = mainMemorySizeInBytes;
     }
 
     public void setNoLines(int noLines) {
@@ -44,15 +42,28 @@ public class MainMemory {
         return mainMemoryLines;
     }
 
-    public int getMainMemorySize() {
-        return mainMemorySize;
+    public long getMainMemorySizeInBytes() {
+        return mainMemorySizeInBytes;
     }
 
-    public int getNoLines() {
+    public long getNoLines() {
         return noLines;
     }
 
     public int getTagSize() {
         return tagSize;
+    }
+
+    public int calculateAddressSize() {
+        return (int)  (Math.log(this.mainMemorySizeInBytes) / Math.log(2));
+    }
+
+    @Override
+    public String toString() {
+        return "MainMemory {" +
+                "mainMemorySize = " + mainMemorySizeInBytes/KB + "KB" +
+                ", noLines = " + noLines +
+                ", tagSize = " + tagSize +
+                '}';
     }
 }

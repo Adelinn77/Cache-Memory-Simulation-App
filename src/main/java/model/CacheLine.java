@@ -47,13 +47,14 @@ public class CacheLine {
 
     @Override
     public String toString() {
-        String dataGrouped = IntStream.range(0, data.length() / BYTE)
-                .mapToObj(i -> data.substring(i * BYTE, (i+1) * BYTE))
+        String dataGrouped = IntStream.range(0, data.length() / BYTE_SIZE)
+                .mapToObj(i -> data.substring(i * BYTE_SIZE, (i+1) * BYTE_SIZE))
                 .collect(Collectors.joining("_"));
 
         return
-                "data = " +  dataGrouped + '\'' +
-                ", validBit = " + validBit + '\'' +
-                ", tag = " + tag + '\'';
+                "data = " +  dataGrouped +
+                ", validBit = " + validBit +
+                ", tag = " + tag +
+                '\n';
     }
 }

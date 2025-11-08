@@ -1,27 +1,33 @@
 package model;
 
+import exceptions.MainMemoryAddressSizeNotSet;
+
 import java.util.ArrayList;
 import java.util.List;
-import utils.Utils;
-import java.math.*;
 
 import static utils.Utils.*;
 
 public class CacheMemory {
 
-    private int cacheSize;
+    private int cacheSizeInBytes;
     private List<CacheLine> cacheLines  = new ArrayList<>();
     private int noLines;
     private int indexSize;
     private int tagSize;
+    private int mainMemoryAddressSize = -1;
 
     public CacheMemory() {}
 
     public CacheMemory(int size) {
-        this.cacheSize = size/BYTE;
-        this.noLines = this.cacheSize/BLOCK_SIZE;
+        this.cacheSizeInBytes = size;
+        this.noLines = this.cacheSizeInBytes / BLOCK_SIZE;
         this.indexSize = (int) (Math.log(noLines) / Math.log(2));
-        this.tagSize = BLOCK_SIZE*BYTE - this.indexSize - OFFSET_SIZE;
+    }
+
+    public void buildCacheMemory() throws  MainMemoryAddressSizeNotSet{
+        if(this.mainMemoryAddressSize == -1)
+            throw  new MainMemoryAddressSizeNotSet("Main memory address size must be set before building cache.");
+        this.tagSize = this.mainMemoryAddressSize - this.indexSize - OFFSET_SIZE;
         for (int i = 0; i < noLines; i++) {
             cacheLines.add(new CacheLine(tagSize));
         }
@@ -31,8 +37,8 @@ public class CacheMemory {
         return cacheLines;
     }
 
-    public int getCacheSize() {
-        return cacheSize;
+    public int getCacheSizeInBytes() {
+        return cacheSizeInBytes;
     }
 
     public int getNoLines() {
@@ -43,8 +49,8 @@ public class CacheMemory {
         this.cacheLines = cacheLines;
     }
 
-    public void setCacheSize(int cacheSize) {
-        this.cacheSize = cacheSize;
+    public void setCacheSizeInBytes(int cacheSizeInBytes) {
+        this.cacheSizeInBytes = cacheSizeInBytes;
     }
 
     public int getTagSize() {
@@ -67,13 +73,18 @@ public class CacheMemory {
         this.indexSize = indexSize;
     }
 
+    public void setMainMemoryAddressSize(int mainMemoryAddressSize) {
+        this.mainMemoryAddressSize = mainMemoryAddressSize;
+    }
+
     @Override
     public String toString() {
-        return "CacheMemory{" +
-                "cacheSize=" + cacheSize +
-                ", noLines=" + noLines +
-                ", indexSize=" + indexSize +
-                ", tagSize=" + tagSize +
-                '}';
+        return "CacheMemory {" +
+                "cacheSize = " + cacheSizeInBytes + "B" +
+                ", noLines = " + noLines +
+                ", indexSize = " + indexSize +
+                ", tagSize = " + tagSize +
+                "}" +
+                "\nCache Lines:\n" + cacheLines.toString();
     }
 }
