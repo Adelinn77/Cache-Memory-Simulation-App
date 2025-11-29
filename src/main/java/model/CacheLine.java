@@ -45,6 +45,10 @@ public class CacheLine {
         return validBit;
     }
 
+    public String getByte(int offset) {
+        return data.substring(offset*BYTE_SIZE, offset*BYTE_SIZE+BYTE_SIZE);
+    }
+
     @Override
     public String toString() {
         String dataGrouped = IntStream.range(0, data.length() / BYTE_SIZE)

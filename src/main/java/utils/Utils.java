@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.Random;
+
 public class Utils {
 
     //each line in both cache and main memory has 4 bytes
@@ -20,5 +22,14 @@ public class Utils {
     
     public static String initializeMainMemoryLineData(int blockSize) {
         return "00000000".repeat(blockSize);
+    }
+
+    public static String generateRandomAddress(int addressSize) {
+        Random random = new Random();
+        StringBuilder address = new StringBuilder(addressSize);
+        for (int i = 0; i < addressSize; i++) {
+            address.append(random.nextBoolean() ? '1' : '0');
+        }
+        return address.toString();
     }
 }

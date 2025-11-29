@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.Random;
+
 import static utils.Utils.OFFSET_SIZE;
 
 public class AddressDecoder {
@@ -17,5 +19,7 @@ public class AddressDecoder {
     public static String extractTag(String address, int tagSize) {
         return address.substring(0, tagSize);
     }
+
+
 
 }

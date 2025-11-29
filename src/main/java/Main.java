@@ -2,7 +2,10 @@ import exceptions.MainMemoryAddressSizeNotSet;
 import model.CacheLine;
 import model.CacheMemory;
 import model.MainMemory;
+import utils.AddressDecoder;
+
 import static utils.Utils.*;
+import static utils.AddressDecoder.*;
 
 public class Main {
 
@@ -22,6 +25,21 @@ public class Main {
 
         System.out.println(mm);
         System.out.println(cm);
+
+
+        /// Demo for extracting all the fields from an address requested by the CPU
+        String testAddress = generateRandomAddress(mm.calculateAddressSize());
+        System.out.println(testAddress);
+
+        String offsetAddress = AddressDecoder.extractOffset(testAddress);
+        System.out.println(offsetAddress);
+
+        String indexAddress = AddressDecoder.extractIndex(testAddress, cm.getIndexSize());
+        System.out.println(indexAddress);
+
+        String tagAddress = AddressDecoder.extractTag(testAddress, cm.getTagSize());
+        System.out.println(tagAddress);
+
 
     }
 }

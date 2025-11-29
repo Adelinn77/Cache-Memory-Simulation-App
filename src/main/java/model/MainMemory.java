@@ -58,6 +58,10 @@ public class MainMemory {
         return (int)  (Math.log(this.mainMemorySizeInBytes) / Math.log(2));
     }
 
+    public String loadFromMainMemory(int addressInt) {
+        return mainMemoryLines.get(addressInt);
+    }
+
     @Override
     public String toString() {
         return "MainMemory {" +

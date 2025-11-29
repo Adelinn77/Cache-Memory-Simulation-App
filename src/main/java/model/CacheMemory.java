@@ -33,6 +33,30 @@ public class CacheMemory {
         }
     }
 
+    public CacheResult findInCache(String index, String offset, String tag) {
+        int indexInt = Integer.parseInt(index);
+        int offsetInt = Integer.parseInt(offset);
+
+        CacheLine cacheLine = cacheLines.get(indexInt);
+        if (!cacheLine.isValidBit()) {
+            return new CacheResult(CacheResultStatus.CACHE_MISS, "not_found");
+        }
+
+        if (!tag.equals(cacheLine.getTag())){
+            return new CacheResult(CacheResultStatus.CACHE_MISS, "not_found");
+        }
+
+        String byteReturned = cacheLine.getByte(offsetInt);
+        return new CacheResult(CacheResultStatus.CACHE_HIT, byteReturned);
+    }
+
+    public void writeBlockToCache(String dataBlock, int indexInt, String tag) {
+        CacheLine cl = cacheLines.get(indexInt);
+        cl.setData(dataBlock);
+        cl.setTag(tag);
+        cl.setValidBit(true);
+    }
+
     public List<CacheLine> getCacheLines() {
         return cacheLines;
     }
@@ -76,6 +100,8 @@ public class CacheMemory {
     public void setMainMemoryAddressSize(int mainMemoryAddressSize) {
         this.mainMemoryAddressSize = mainMemoryAddressSize;
     }
+
+
 
     @Override
     public String toString() {
