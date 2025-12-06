@@ -34,8 +34,8 @@ public class CacheMemory {
     }
 
     public CacheResult findInCache(String index, String offset, String tag) {
-        int indexInt = Integer.parseInt(index);
-        int offsetInt = Integer.parseInt(offset);
+        int indexInt = Integer.parseInt(index, 2);
+        int offsetInt = Integer.parseInt(offset, 2);
 
         CacheLine cacheLine = cacheLines.get(indexInt);
         if (!cacheLine.isValidBit()) {
@@ -50,7 +50,8 @@ public class CacheMemory {
         return new CacheResult(CacheResultStatus.CACHE_HIT, byteReturned);
     }
 
-    public void writeBlockToCache(String dataBlock, int indexInt, String tag) {
+    public void writeBlockToCache(String dataBlock, String index, String tag) {
+        int indexInt = Integer.parseInt(index, 2);
         CacheLine cl = cacheLines.get(indexInt);
         cl.setData(dataBlock);
         cl.setTag(tag);
@@ -100,8 +101,6 @@ public class CacheMemory {
     public void setMainMemoryAddressSize(int mainMemoryAddressSize) {
         this.mainMemoryAddressSize = mainMemoryAddressSize;
     }
-
-
 
     @Override
     public String toString() {

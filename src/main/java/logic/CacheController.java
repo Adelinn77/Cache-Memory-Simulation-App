@@ -13,7 +13,6 @@ import static utils.Utils.OFFSET_SIZE;
 public class CacheController {
     private CacheMemory cacheMemory;
     private MainMemory mainMemory;
-    private AddressDecoder addressDecoder;
 
     public CacheController(CacheMemory cacheMemory, MainMemory mainMemory) {
         this.cacheMemory = cacheMemory;
@@ -30,16 +29,10 @@ public class CacheController {
             return cacheResult.getData();
         }
 
-        int tagInt = Integer.parseInt(tag, 2);
-        int indexInt = Integer.parseInt(index, 2);
-        int addressInt = ((tagInt << cacheMemory.getIndexSize()) | indexInt) << OFFSET_SIZE;
-        String data = mainMemory.loadFromMainMemory(addressInt);
-        cacheMemory.writeBlockToCache(data, indexInt, tag);
+        String data = mainMemory.loadFromMainMemory(tag, index, cacheMemory.getIndexSize());
+        cacheMemory.writeBlockToCache(data, index, tag);
 
         int offsetInt = Integer.parseInt(offset, 2);
         return data.substring(offsetInt * BYTE_SIZE, offsetInt * BYTE_SIZE + BYTE_SIZE);
     }
-
-
-
 }

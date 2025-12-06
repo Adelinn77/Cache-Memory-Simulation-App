@@ -10,8 +10,6 @@ public class MainMemory {
     private List<String> mainMemoryLines  = new ArrayList<>();
     private long noLines;
     private int tagSize = -1;
-
-
     public MainMemory() {}
 
     public MainMemory(long mainMemorySizeInBytes) {
@@ -58,8 +56,12 @@ public class MainMemory {
         return (int)  (Math.log(this.mainMemorySizeInBytes) / Math.log(2));
     }
 
-    public String loadFromMainMemory(int addressInt) {
-        return mainMemoryLines.get(addressInt);
+    public String loadFromMainMemory(String tag, String index, int indexSize) {
+        long tagInt = Long.parseLong(tag, 2);
+        int indexInt = Integer.parseInt(index, 2);
+        long addressInt = ((tagInt << indexSize) | indexInt);
+
+        return mainMemoryLines.get((int) addressInt);
     }
 
     @Override
