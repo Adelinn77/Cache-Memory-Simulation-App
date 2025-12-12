@@ -1,6 +1,5 @@
 import exceptions.MainMemoryAddressSizeNotSet;
 import logic.CacheController;
-import model.CacheLine;
 import model.CacheMemory;
 import model.MainMemory;
 import utils.AddressDecoder;
@@ -9,9 +8,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static utils.Utils.*;
-import static utils.AddressDecoder.*;
 
-public class Main {
+public class MainLogic {
 
     public static void main(String[] args) {
         MainMemory mm = new MainMemory(64*KB);
@@ -31,7 +29,7 @@ public class Main {
         System.out.println(cm);
 
 
-        /// Demo for extracting all the fields from an address requested by the CPU
+        // Demo for extracting all the fields from an address requested by the CPU
         String testAddress = generateRandomAddress(mm.calculateAddressSize());
         String addressGrouped = IntStream.range(0, testAddress.length() / 4)
                 .mapToObj(i -> testAddress.substring(i * 4, (i+1) * 4))
@@ -48,8 +46,8 @@ public class Main {
         System.out.println("Tag is: " + tagAddress);
 
         CacheController cacheController = new CacheController(cm, mm);
-        String byteReturned1 = cacheController.accessAddress(testAddress);
-        String byteReturned2 = cacheController.accessAddress(testAddress);
+        String byteReturned1 = cacheController.readDataFromAddress(testAddress);
+        String byteReturned2 = cacheController.readDataFromAddress(testAddress);
 
         System.out.println("byteReturned1: " + byteReturned1);
         System.out.println("byteReturned2: " + byteReturned2);

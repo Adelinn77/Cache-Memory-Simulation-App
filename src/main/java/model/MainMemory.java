@@ -64,6 +64,26 @@ public class MainMemory {
         return mainMemoryLines.get((int) addressInt);
     }
 
+    public String writeDataToMainMemoryLine(String data, String tag, String index, String offset,int indexSize) {
+        long tagInt = Long.parseLong(tag, 2);
+        int indexInt = Integer.parseInt(index, 2);
+        int offsetInt  = Integer.parseInt(offset, 2);
+        long addressInt = ((tagInt << indexSize) | indexInt);
+
+        String newData =  mainMemoryLines.get((int) addressInt);
+
+        int start = offsetInt * BYTE_SIZE;
+        int end   = start + BYTE_SIZE;
+
+        newData = newData.substring(0, start)
+                + data
+                + newData.substring(end);
+
+        mainMemoryLines.set((int) addressInt, newData);
+
+        return newData;
+    }
+
     @Override
     public String toString() {
         return "MainMemory {" +

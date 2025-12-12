@@ -39,11 +39,11 @@ public class CacheMemory {
 
         CacheLine cacheLine = cacheLines.get(indexInt);
         if (!cacheLine.isValidBit()) {
-            return new CacheResult(CacheResultStatus.CACHE_MISS, "not_found");
+            return new CacheResult(CacheResultStatus.CACHE_MISS, "Valid bit is 0!");
         }
 
         if (!tag.equals(cacheLine.getTag())){
-            return new CacheResult(CacheResultStatus.CACHE_MISS, "not_found");
+            return new CacheResult(CacheResultStatus.CACHE_MISS, "Tag fields do not match!");
         }
 
         String byteReturned = cacheLine.getByte(offsetInt);
@@ -57,6 +57,24 @@ public class CacheMemory {
         cl.setTag(tag);
         cl.setValidBit(true);
     }
+
+    public void writeDataToCacheLine(String data, String index, String offset) {
+        int indexInt = Integer.parseInt(index, 2);
+        int offsetInt = Integer.parseInt(offset, 2);
+
+        CacheLine cl = cacheLines.get(indexInt);
+        String newData = cl.getData();
+
+        int start = offsetInt * BYTE_SIZE;
+        int end   = start + BYTE_SIZE;
+
+        newData = newData.substring(0, start)
+                + data
+                + newData.substring(end);
+
+        cl.setData(newData);
+    }
+
 
     public List<CacheLine> getCacheLines() {
         return cacheLines;
