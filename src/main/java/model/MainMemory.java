@@ -64,7 +64,7 @@ public class MainMemory {
         return mainMemoryLines.get((int) addressInt);
     }
 
-    public String writeDataToMainMemoryLine(String data, String tag, String index, String offset,int indexSize) {
+    public String writeDataByteToMainMemory(String data, String tag, String index, String offset, int indexSize) {
         long tagInt = Long.parseLong(tag, 2);
         int indexInt = Integer.parseInt(index, 2);
         int offsetInt  = Integer.parseInt(offset, 2);

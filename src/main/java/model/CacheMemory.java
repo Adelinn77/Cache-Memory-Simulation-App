@@ -58,7 +58,7 @@ public class CacheMemory {
         cl.setValidBit(true);
     }
 
-    public void writeDataToCacheLine(String data, String index, String offset) {
+    public void writeDataByteToCache(String data, String index, String offset) {
         int indexInt = Integer.parseInt(index, 2);
         int offsetInt = Integer.parseInt(offset, 2);
 

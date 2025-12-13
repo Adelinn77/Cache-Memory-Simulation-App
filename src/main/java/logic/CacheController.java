@@ -41,12 +41,12 @@ public class CacheController {
 
         CacheResult cacheResult = cacheMemory.findInCache(index, offset, tag);
         if (cacheResult.getStatus().equals(CacheResultStatus.CACHE_HIT)) {
-            mainMemory.writeDataToMainMemoryLine(data, tag, index, offset, cacheMemory.getIndexSize());
-            cacheMemory.writeDataToCacheLine(data, index, offset);
+            mainMemory.writeDataByteToMainMemory(data, tag, index, offset, cacheMemory.getIndexSize());
+            cacheMemory.writeDataByteToCache(data, index, offset);
             return;
         }
 
-        String dataBlock = mainMemory.writeDataToMainMemoryLine(data, tag, index, offset, cacheMemory.getIndexSize());
+        String dataBlock = mainMemory.writeDataByteToMainMemory(data, tag, index, offset, cacheMemory.getIndexSize());
         cacheMemory.writeBlockToCache(dataBlock, index, tag);
     }
 }
