@@ -7,12 +7,6 @@
     -fx-text-fill: #e8f1ff;
 }
 
-.label {
-    -fx-text-fill: #f3f7ff;
-    -fx-font-weight: 600;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 6, 0.2, 0, 1);
-}
-
 .top-bar {
     -fx-background-color: rgba(9, 20, 35, 0.75);
     -fx-background-radius: 16;
@@ -42,7 +36,7 @@
 }
 
 .glass-card {
-    -fx-background-color: rgba(6, 17, 30, 0.86);
+    -fx-background-color: rgba(6, 17, 30, 0.76);
     -fx-background-radius: 18;
     -fx-border-color: rgba(255, 255, 255, 0.05);
     -fx-border-radius: 18;
@@ -56,30 +50,26 @@
 }
 
 .card-subtitle {
-    -fx-text-fill: #e3efff;
+    -fx-text-fill: #c6d8f3;
     -fx-font-size: 13px;
-    -fx-opacity: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 10, 0.25, 0, 2);
+    -fx-opacity: 0.9;
 }
 
 .section-label {
-    -fx-text-fill: #f9fbff;
-    -fx-font-weight: 800;
+    -fx-text-fill: #d2e7ff;
+    -fx-font-weight: 700;
     -fx-padding: 6 0 0 0;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 8, 0.2, 0, 1);
 }
 
 .status-label {
-    -fx-text-fill: #b8e5ff;
-    -fx-font-size: 13px;
-    -fx-font-weight: 700;
+    -fx-text-fill: #9bd4ff;
+    -fx-font-size: 12px;
 }
 
 .metric-value {
-    -fx-text-fill: #9ff0ff;
-    -fx-font-weight: 800;
+    -fx-text-fill: #7ae7ff;
+    -fx-font-weight: 700;
     -fx-font-size: 14px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 10, 0.3, 0, 2);
 }
 
 .stats-grid {
@@ -131,18 +121,13 @@
     -fx-background-radius: 12;
     -fx-border-radius: 12;
     -fx-border-color: rgba(255, 255, 255, 0.08);
-    -fx-text-fill: #f6fbff;
-    -fx-font-weight: 700;
-    -fx-prompt-text-fill: rgba(233, 244, 255, 0.75);
+    -fx-text-fill: #e9f4ff;
+    -fx-prompt-text-fill: rgba(233, 244, 255, 0.55);
 }
 
 .combo-box-base:focused, .text-field:focused {
     -fx-border-color: rgba(123, 216, 255, 0.9);
     -fx-background-color: rgba(255, 255, 255, 0.16);
-}
-
-.combo-box-base:disabled, .text-field:disabled {
-    -fx-opacity: 0.85;
 }
 
 .log-wrapper {
@@ -152,12 +137,10 @@
 }
 
 .text-area {
-    -fx-control-inner-background: rgba(0, 6, 12, 0.7);
-    -fx-text-fill: #f6fbff;
-    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-control-inner-background: transparent;
+    -fx-text-fill: #e9f4ff;
+    -fx-border-color: rgba(255, 255, 255, 0.08);
     -fx-border-radius: 12;
-    -fx-background-color: rgba(0,0,0,0.35);
-    -fx-padding: 10;
     -fx-highlight-fill: #3ba7ff;
     -fx-highlight-text-fill: white;
 }
