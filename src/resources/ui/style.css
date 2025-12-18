@@ -1,25 +1,163 @@
-
-.header-title {
-    -fx-font-size: 52px;
-    -fx-font-weight: bold;
-    -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: #E6F1FF;
-
-    /* shadow for contrast */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 18, 0.5, 0, 4);
-}
-
-
-.title-container {
-    -fx-background-color: rgba(0, 0, 0, 0.35);
-    -fx-background-radius: 14;
-    -fx-padding: 16 32 16 32;
-}
-
-
 .root {
     -fx-background-image: url("background.png");
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center;
+    -fx-font-family: "Segoe UI", "Inter", "Arial";
+    -fx-text-fill: #e8f1ff;
+}
+
+.label {
+    -fx-text-fill: #f3f7ff;
+    -fx-font-weight: 600;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 6, 0.2, 0, 1);
+}
+
+.top-bar {
+    -fx-background-color: rgba(9, 20, 35, 0.75);
+    -fx-background-radius: 16;
+    -fx-padding: 12 18 12 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 18, 0.4, 0, 8);
+}
+
+.header-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 12, 0.4, 0, 3);
+}
+
+.accent-chip {
+    -fx-background-color: rgba(84, 206, 255, 0.15);
+    -fx-text-fill: #7bd8ff;
+    -fx-padding: 6 12;
+    -fx-background-radius: 20;
+    -fx-font-weight: 600;
+    -fx-border-color: rgba(123, 216, 255, 0.5);
+    -fx-border-radius: 20;
+}
+
+.content-layer {
+    -fx-padding: 10 20 10 20;
+}
+
+.glass-card {
+    -fx-background-color: rgba(6, 17, 30, 0.86);
+    -fx-background-radius: 18;
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 20, 0.45, 0, 10);
+}
+
+.card-title {
+    -fx-text-fill: #f6fbff;
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+}
+
+.card-subtitle {
+    -fx-text-fill: #e3efff;
+    -fx-font-size: 13px;
+    -fx-opacity: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 10, 0.25, 0, 2);
+}
+
+.section-label {
+    -fx-text-fill: #f9fbff;
+    -fx-font-weight: 800;
+    -fx-padding: 6 0 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 8, 0.2, 0, 1);
+}
+
+.status-label {
+    -fx-text-fill: #b8e5ff;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+}
+
+.metric-value {
+    -fx-text-fill: #9ff0ff;
+    -fx-font-weight: 800;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 10, 0.3, 0, 2);
+}
+
+.stats-grid {
+    -fx-padding: 10 0 0 0;
+}
+
+.primary-button {
+    -fx-background-color: linear-gradient(to right, #21d4fd, #5121ff);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 12;
+    -fx-padding: 10 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 14, 0.4, 0, 4);
+}
+
+.primary-button:hover {
+    -fx-background-color: linear-gradient(to right, #43e9ff, #7047ff);
+}
+
+.secondary-button {
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+    -fx-text-fill: #f2f6ff;
+    -fx-font-weight: 700;
+    -fx-background-radius: 12;
+    -fx-padding: 10 16;
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-border-radius: 12;
+}
+
+.secondary-button:hover {
+    -fx-border-color: rgba(123, 216, 255, 0.7);
+}
+
+.ghost-button {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-text-fill: #d8ecff;
+    -fx-padding: 9 14;
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-radius: 10;
+}
+
+.ghost-button:hover {
+    -fx-border-color: rgba(123, 216, 255, 0.55);
+}
+
+.text-field, .combo-box-base, .text-area {
+    -fx-background-color: rgba(255, 255, 255, 0.09);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.08);
+    -fx-text-fill: #f6fbff;
+    -fx-font-weight: 700;
+    -fx-prompt-text-fill: rgba(233, 244, 255, 0.75);
+}
+
+.combo-box-base:focused, .text-field:focused {
+    -fx-border-color: rgba(123, 216, 255, 0.9);
+    -fx-background-color: rgba(255, 255, 255, 0.16);
+}
+
+.combo-box-base:disabled, .text-field:disabled {
+    -fx-opacity: 0.85;
+}
+
+.log-wrapper {
+    -fx-background-color: rgba(5, 13, 24, 0.76);
+    -fx-background-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 18, 0.4, 0, 8);
+}
+
+.text-area {
+    -fx-control-inner-background: rgba(0, 6, 12, 0.7);
+    -fx-text-fill: #f6fbff;
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-radius: 12;
+    -fx-background-color: rgba(0,0,0,0.35);
+    -fx-padding: 10;
+    -fx-highlight-fill: #3ba7ff;
+    -fx-highlight-text-fill: white;
 }

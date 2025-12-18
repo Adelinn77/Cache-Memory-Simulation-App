@@ -1,20 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="720.0" prefWidth="1120.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MainView">
    <top>
-      <StackPane prefHeight="410.0" prefWidth="848.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="top-bar" BorderPane.alignment="CENTER">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cache Memory Simulator">
-               <font>
-                  <Font name="Book Antiqua" size="36.0" />
-               </font>
-            </Text>
+            <Label text="Cache Memory Simulator" styleClass="header-title" />
+         </children>
+         <padding>
+            <Insets left="24.0" right="24.0" top="16.0" bottom="16.0" />
+         </padding>
+      </HBox>
+   </top>
+   <center>
+      <StackPane styleClass="content-layer" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" spacing="18.0">
+               <children>
+                  <HBox alignment="CENTER" spacing="18.0">
+                     <children>
+                        <VBox prefWidth="420.0" spacing="14.0" styleClass="glass-card">
+                           <children>
+                              <Label text="Configuration" styleClass="card-title" />
+                              <Label text="Pick your cache and main memory sizes to get started." styleClass="card-subtitle" wrapText="true" />
+                              <GridPane hgap="12.0" vgap="12.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" minWidth="10.0" prefWidth="120.0" />
+                                    <ColumnConstraints halignment="LEFT" minWidth="10.0" prefWidth="240.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Cache size" GridPane.rowIndex="0" />
+                                    <ComboBox fx:id="cacheSizePicker" promptText="Choose cache size" GridPane.columnIndex="1" />
+                                    <Label text="Main memory size" GridPane.rowIndex="1" />
+                                    <ComboBox fx:id="memorySizePicker" promptText="Choose main memory size" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                              <Button fx:id="configureButton" mnemonicParsing="false" onAction="#configureSimulation" prefWidth="180.0" text="Continue" styleClass="primary-button" />
+                              <Label fx:id="statusLabel" styleClass="status-label" text="Awaiting configuration" wrapText="true" />
+                              <GridPane hgap="12.0" vgap="10.0" styleClass="stats-grid">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" minWidth="10.0" prefWidth="140.0" />
+                                    <ColumnConstraints halignment="LEFT" minWidth="10.0" prefWidth="120.0" />
+                                 </columnConstraints>
+                                 <children>
+                                    <Label text="Address bits" />
+                                    <Label fx:id="addressBitsValue" styleClass="metric-value" text="-" GridPane.columnIndex="1" />
+                                    <Label text="Index bits" GridPane.rowIndex="1" />
+                                    <Label fx:id="indexBitsValue" styleClass="metric-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label text="Offset bits" GridPane.rowIndex="2" />
+                                    <Label fx:id="offsetBitsValue" styleClass="metric-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label text="Tag bits" GridPane.rowIndex="3" />
+                                    <Label fx:id="tagBitsValue" styleClass="metric-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                           <padding>
+                              <Insets left="20.0" right="20.0" top="20.0" bottom="20.0" />
+                           </padding>
+                        </VBox>
+                        <VBox prefWidth="480.0" spacing="14.0" styleClass="glass-card">
+                           <children>
+                              <Label text="Memory Access" styleClass="card-title" />
+                              <Label text="Generate a random address or use your own, then read or write a byte." styleClass="card-subtitle" wrapText="true" />
+                              <Label text="Address" styleClass="section-label" />
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <TextField fx:id="addressField" promptText="Binary address" />
+                                    <Button fx:id="randomAddressButton" mnemonicParsing="false" onAction="#onGenerateRandomAddress" text="Random" styleClass="ghost-button" />
+                                 </children>
+                              </HBox>
+                              <Label text="Data to write" styleClass="section-label" />
+                              <TextField fx:id="dataField" promptText="8-bit binary value" />
+                              <HBox alignment="CENTER" spacing="12.0">
+                                 <children>
+                                    <Button fx:id="readButton" mnemonicParsing="false" onAction="#handleRead" prefWidth="120.0" text="Read" styleClass="secondary-button" />
+                                    <Button fx:id="writeButton" mnemonicParsing="false" onAction="#handleWrite" prefWidth="120.0" text="Write" styleClass="primary-button" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets left="20.0" right="20.0" top="20.0" bottom="20.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets left="20.0" right="20.0" top="20.0" bottom="0.0" />
+               </padding>
+            </VBox>
          </children>
       </StackPane>
-   </top>
+   </center>
+   <bottom>
+      <VBox spacing="8.0" styleClass="log-wrapper" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Activity Log" styleClass="card-title" />
+            <TextArea fx:id="logArea" editable="false" prefHeight="160.0" promptText="Actions will appear here..." wrapText="true" />
+         </children>
+         <padding>
+            <Insets left="24.0" right="24.0" top="6.0" bottom="16.0" />
+         </padding>
+      </VBox>
+   </bottom>
 </BorderPane>
