@@ -1,5 +1,25 @@
+
 .header-title {
-    -fx-font-size: 26px;
+    -fx-font-size: 52px;
     -fx-font-weight: bold;
-    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: #E6F1FF;
+
+    /* shadow for contrast */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 18, 0.5, 0, 4);
+}
+
+
+.title-container {
+    -fx-background-color: rgba(0, 0, 0, 0.35);
+    -fx-background-radius: 14;
+    -fx-padding: 16 32 16 32;
+}
+
+
+.root {
+    -fx-background-image: url("background.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
 }
