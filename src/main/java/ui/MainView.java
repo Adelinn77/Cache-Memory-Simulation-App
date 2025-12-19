@@ -107,7 +107,7 @@ public class MainView {
 
     @FXML
     private void onGenerateRandomAddress() {
-        if (!ensureConfigured()) {
+        if (ensureConfigured()) {
             return;
         }
 
@@ -118,7 +118,7 @@ public class MainView {
 
     @FXML
     private void handleRead() {
-        if (!ensureConfigured()) {
+        if (ensureConfigured()) {
             return;
         }
 
@@ -134,7 +134,7 @@ public class MainView {
 
     @FXML
     private void handleWrite() {
-        if (!ensureConfigured()) {
+        if (ensureConfigured()) {
             return;
         }
 
@@ -180,9 +180,9 @@ public class MainView {
         if (cacheController == null || cacheMemory == null || mainMemory == null) {
             statusLabel.setText("Configure cache and memory first.");
             appendLog("Action blocked: simulator is not configured yet.");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     private String validatedAddress() {

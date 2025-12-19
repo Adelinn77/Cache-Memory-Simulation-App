@@ -16,11 +16,10 @@
 
 <BorderPane prefHeight="720.0" prefWidth="1120.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MainView">
    <top>
-      <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="top-bar" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" spacing="12.0" styleClass="top-bar" BorderPane.alignment="CENTER">
          <children>
             <Label text="Cache Memory Simulator" styleClass="header-title" />
-            <Label text="Interactive Lab" styleClass="accent-chip" />
-         </children>
+           </children>
          <padding>
             <Insets left="24.0" right="24.0" top="16.0" bottom="16.0" />
          </padding>
