@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="720.0" prefWidth="1120.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ConfigController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="top-bar">
+            <padding>
+                <Insets bottom="16" left="24" right="24" top="16" />
+            </padding>
+            <Label styleClass="header-title" text="Cache Memory Simulator" />
+        </HBox>
+    </top>
+
+    <center>
+        <StackPane>
+            <!-- Full-size card -->
+            <VBox maxHeight="Infinity" maxWidth="Infinity" spacing="14" styleClass="card">
+                <padding>
+                    <Insets bottom="22" left="22" right="22" top="22" />
+                </padding>
+
+                <!-- Title -->
+                <Label styleClass="section-title" text="Configuration" />
+
+                <!-- Hint directly under title -->
+                <Label fx:id="hintLabel" styleClass="hint" text="Pick sizes, then start the simulation." />
+
+                   <!-- Form -->
+                <GridPane hgap="12" vgap="12">
+                    <columnConstraints>
+                        <!-- label col -->
+                        <ColumnConstraints hgrow="NEVER" minWidth="180" />
+                        <!-- combo col -->
+                        <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+
+                       <Label text="Main memory size:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <ComboBox fx:id="mainMemCombo" maxWidth="260" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                       <Label text="Cache size:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <ComboBox fx:id="cacheCombo" maxWidth="260" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+                </GridPane>
+
+                <!-- Buttons left -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Button onAction="#onReset" styleClass="btn-secondary" text="Reset" textAlignment="CENTER" />
+                    <Button onAction="#onStart" styleClass="btn-primary" text="Start" textAlignment="CENTER" />
+                </HBox>
+
+                <!-- Keep content up top like in screenshot -->
+                <Region VBox.vgrow="ALWAYS" />
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>

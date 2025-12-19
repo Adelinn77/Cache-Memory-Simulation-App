@@ -9,7 +9,7 @@ import static utils.Utils.*;
 
 public class CacheMemory {
 
-    private int cacheSizeInBytes;
+    private long cacheSizeInBytes;
     private List<CacheLine> cacheLines  = new ArrayList<>();
     private int noLines;
     private int indexSize;
@@ -18,9 +18,9 @@ public class CacheMemory {
 
     public CacheMemory() {}
 
-    public CacheMemory(int size) {
+    public CacheMemory(long size) {
         this.cacheSizeInBytes = size;
-        this.noLines = this.cacheSizeInBytes / BLOCK_SIZE;
+        this.noLines = (int)this.cacheSizeInBytes / BLOCK_SIZE;
         this.indexSize = (int) (Math.log(noLines) / Math.log(2));
     }
 
@@ -80,7 +80,7 @@ public class CacheMemory {
         return cacheLines;
     }
 
-    public int getCacheSizeInBytes() {
+    public long getCacheSizeInBytes() {
         return cacheSizeInBytes;
     }
 

@@ -84,6 +84,10 @@ public class MainMemory {
         return newData;
     }
 
+    public int getSizeInKB() {
+        return (int) (mainMemorySizeInBytes/KB);
+    }
+
     @Override
     public String toString() {
         return "MainMemory {" +

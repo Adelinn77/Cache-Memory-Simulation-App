@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="720" prefWidth="1120" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.SimulatorController">
+
+    <top>
+        <HBox alignment="CENTER" spacing="10" styleClass="top-bar">
+            <padding>
+                <Insets bottom="14" left="14" right="14" top="14" />
+            </padding>
+            <Label fx:id="titleLabel" styleClass="header-title" text="Simulation" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#onBack" styleClass="btn-secondary" text="Back" />
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.5">
+            <VBox spacing="10" styleClass="card">
+                <padding>
+                    <Insets bottom="14" left="14" right="14" top="14" />
+                </padding>
+                <Label styleClass="section-title" text="Cache memory" />
+                <TableView fx:id="cacheTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="cIndex" prefWidth="70" text="Index" />
+                        <TableColumn fx:id="cValid" prefWidth="40" text="V" />
+                        <TableColumn fx:id="cTag" prefWidth="120" text="Tag" />
+                        <TableColumn fx:id="cB0" prefWidth="70" text="B0" />
+                        <TableColumn fx:id="cB1" prefWidth="70" text="B1" />
+                        <TableColumn fx:id="cB2" prefWidth="70" text="B2" />
+                        <TableColumn fx:id="cB3" prefWidth="70" text="B3" />
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <VBox spacing="10" styleClass="card">
+                <padding>
+                    <Insets bottom="14" left="14" right="14" top="14" />
+                </padding>
+                <Label styleClass="section-title" text="Main memory (4B blocks)" />
+                <TableView fx:id="memTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="mAddr" prefWidth="110" text="Block addr" />
+                        <TableColumn fx:id="mB0" prefWidth="70" text="B0" />
+                        <TableColumn fx:id="mB1" prefWidth="70" text="B1" />
+                        <TableColumn fx:id="mB2" prefWidth="70" text="B2" />
+                        <TableColumn fx:id="mB3" prefWidth="70" text="B3" />
+                    </columns>
+                </TableView>
+                <Pagination fx:id="memPagination" />
+            </VBox>
+        </SplitPane>
+    </center>
+</BorderPane>

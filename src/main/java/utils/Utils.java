@@ -11,6 +11,7 @@ public class Utils {
     public static final int B = 1;
     public static final int KB = 1024;
     public static final int MB = 1024*1024;
+    public static final int PAGE_SIZE_BLOCKS = 256;
 
     public static String initializeTag(int tagSize) {
         return "0".repeat(tagSize);

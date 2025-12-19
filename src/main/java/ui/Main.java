@@ -9,10 +9,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/ui/MainView.fxml"));
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/ui/ConfigView.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setTitle("Cache Simulator");
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 
