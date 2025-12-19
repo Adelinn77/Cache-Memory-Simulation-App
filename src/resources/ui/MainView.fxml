@@ -110,10 +110,31 @@
       </StackPane>
    </center>
    <bottom>
-      <VBox spacing="8.0" styleClass="log-wrapper" BorderPane.alignment="CENTER">
+      <VBox spacing="12.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Activity Log" styleClass="card-title" />
-            <TextArea fx:id="logArea" editable="false" prefHeight="160.0" promptText="Actions will appear here..." wrapText="true" />
+            <Label fx:id="operationInfoLabel" styleClass="status-label" text="Awaiting first operation." />
+            <HBox spacing="16.0">
+               <children>
+                  <VBox prefWidth="520.0" spacing="10.0" styleClass="glass-card">
+                     <children>
+                        <Label text="Cache Line Snapshot" styleClass="card-title" />
+                        <TextArea fx:id="cacheViewArea" editable="false" prefHeight="140.0" wrapText="true" />
+                     </children>
+                     <padding>
+                        <Insets left="16.0" right="16.0" top="16.0" bottom="16.0" />
+                     </padding>
+                  </VBox>
+                  <VBox prefWidth="520.0" spacing="10.0" styleClass="glass-card">
+                     <children>
+                        <Label text="Main Memory Block" styleClass="card-title" />
+                        <TextArea fx:id="memoryViewArea" editable="false" prefHeight="140.0" wrapText="true" />
+                     </children>
+                     <padding>
+                        <Insets left="16.0" right="16.0" top="16.0" bottom="16.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </HBox>
          </children>
          <padding>
             <Insets left="24.0" right="24.0" top="6.0" bottom="16.0" />

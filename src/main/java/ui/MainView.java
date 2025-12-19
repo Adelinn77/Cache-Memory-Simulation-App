@@ -10,13 +10,16 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import logic.CacheController;
 import model.CacheMemory;
+import model.CacheResultStatus;
 import model.MainMemory;
+import model.MemoryOperationResult;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static utils.Utils.B;
 import static utils.Utils.KB;
+import static utils.Utils.BYTE_SIZE;
 import static utils.Utils.OFFSET_SIZE;
 import static utils.Utils.generateRandomAddress;
 
@@ -43,12 +46,14 @@ public class MainView {
     @FXML private Button randomAddressButton;
     @FXML private Button readButton;
     @FXML private Button writeButton;
-    @FXML private TextArea logArea;
     @FXML private Label statusLabel;
     @FXML private Label addressBitsValue;
     @FXML private Label indexBitsValue;
     @FXML private Label tagBitsValue;
     @FXML private Label offsetBitsValue;
+    @FXML private Label operationInfoLabel;
+    @FXML private TextArea cacheViewArea;
+    @FXML private TextArea memoryViewArea;
 
     private CacheController cacheController;
     private CacheMemory cacheMemory;
@@ -63,7 +68,10 @@ public class MainView {
         memorySizePicker.getSelectionModel().selectFirst();
 
         toggleActionControls(true);
-        logArea.appendText("Welcome! Configure the simulator to begin.\n");
+        statusLabel.setText("Select cache and memory sizes to begin.");
+        operationInfoLabel.setText("Awaiting first operation.");
+        cacheViewArea.setText("Cache line details will appear here.");
+        memoryViewArea.setText("Main memory block details will appear here.");
     }
 
     @FXML
@@ -73,7 +81,6 @@ public class MainView {
 
         if (cacheSelection == null || memorySelection == null) {
             statusLabel.setText("Select cache and main memory sizes.");
-            appendLog("Please choose values for both cache size and main memory size.");
             return;
         }
 
@@ -89,7 +96,6 @@ public class MainView {
             mainMemory.setTagSize(cacheMemory.getTagSize());
         } catch (MainMemoryAddressSizeNotSet e) {
             statusLabel.setText("Configuration error. Check sizes and retry.");
-            appendLog(e.getMessage());
             return;
         }
 
@@ -98,11 +104,12 @@ public class MainView {
         updateBitLabels();
 
         statusLabel.setText("Ready to simulate memory operations.");
-        appendLog(String.format("Configured cache (%s) and main memory (%s).", cacheSelection, memorySelection));
+        operationInfoLabel.setText(String.format("Configured cache (%s) and main memory (%s).", cacheSelection, memorySelection));
 
         String randomAddress = generateRandomAddress(mainMemory.calculateAddressSize());
         addressField.setText(randomAddress);
-        appendLog("Starting address: " + formatAddress(randomAddress));
+        cacheViewArea.setText("No access yet. Choose Read or Write.");
+        memoryViewArea.setText("No access yet. Choose Read or Write.");
     }
 
     @FXML
@@ -113,7 +120,7 @@ public class MainView {
 
         String randomAddress = generateRandomAddress(mainMemory.calculateAddressSize());
         addressField.setText(randomAddress);
-        appendLog("New random address: " + formatAddress(randomAddress));
+        statusLabel.setText("Generated a new random address.");
     }
 
     @FXML
@@ -127,9 +134,11 @@ public class MainView {
             return;
         }
 
-        String data = cacheController.readDataFromAddress(address);
-        statusLabel.setText("Read completed.");
-        appendLog(String.format("Read byte %s from %s", data, formatAddress(address)));
+        MemoryOperationResult result = cacheController.readDataFromAddress(address);
+        statusLabel.setText(result.getStatus() == CacheResultStatus.CACHE_HIT
+                ? "Read completed (cache hit)."
+                : "Read completed (cache miss).");
+        updateViews(address, result, false);
     }
 
     @FXML
@@ -146,19 +155,19 @@ public class MainView {
         String data = dataField.getText().trim();
         if (data.isEmpty()) {
             statusLabel.setText("Provide 8-bit data to write.");
-            appendLog("Write aborted: data field is empty.");
             return;
         }
 
         if (!data.matches("[01]{8}")) {
             statusLabel.setText("Data must be 8-bit binary.");
-            appendLog("Write aborted: data must be exactly 8 binary digits.");
             return;
         }
 
-        cacheController.writeDataToAddress(address, data);
-        statusLabel.setText("Write completed.");
-        appendLog(String.format("Wrote byte %s to %s", data, formatAddress(address)));
+        MemoryOperationResult result = cacheController.writeDataToAddress(address, data);
+        statusLabel.setText(result.getStatus() == CacheResultStatus.CACHE_HIT
+                ? "Write completed (cache hit)."
+                : "Write completed (cache miss).");
+        updateViews(address, result, true);
     }
 
     private void toggleActionControls(boolean disable) {
@@ -179,7 +188,6 @@ public class MainView {
     private boolean ensureConfigured() {
         if (cacheController == null || cacheMemory == null || mainMemory == null) {
             statusLabel.setText("Configure cache and memory first.");
-            appendLog("Action blocked: simulator is not configured yet.");
             return true;
         }
         return false;
@@ -189,28 +197,64 @@ public class MainView {
         String address = addressField.getText().trim();
         if (address.isEmpty()) {
             statusLabel.setText("Enter an address.");
-            appendLog("Operation aborted: address is empty.");
             return null;
         }
 
         int expectedSize = mainMemory.calculateAddressSize();
         if (!address.matches("[01]+")) {
             statusLabel.setText("Address must be binary.");
-            appendLog("Operation aborted: address must contain only 0s and 1s.");
             return null;
         }
 
-        if (address.length() != expectedSize) {
-            statusLabel.setText(String.format("Address must be %d bits.", expectedSize));
-            appendLog(String.format("Operation aborted: address must be %d bits long.", expectedSize));
+        if (address.length() > expectedSize) {
+            statusLabel.setText(String.format("Address must be at most %d bits.", expectedSize));
             return null;
+        }
+
+        if (address.length() < expectedSize) {
+            String padded = "0".repeat(expectedSize - address.length()) + address;
+            addressField.setText(padded);
+            return padded;
         }
 
         return address;
     }
 
-    private void appendLog(String message) {
-        logArea.appendText(message + "\n");
+    private void updateViews(String address, MemoryOperationResult result, boolean isWrite) {
+        String statusText = result.getStatus() == CacheResultStatus.CACHE_HIT ? "CACHE HIT" : "CACHE MISS";
+        operationInfoLabel.setText(String.format(
+                "%s | %s at address %s",
+                statusText,
+                isWrite ? "WRITE" : "READ",
+                formatAddress(address)
+        ));
+
+        String cacheDetails = String.format(
+                "Cache line index: %d%nValid bit: %s%nTag: %s%nData (by byte):%n%s",
+                result.getCacheLineIndex(),
+                result.isCacheLineValid() ? "1" : "0",
+                result.getCacheLineTag(),
+                formatBlock(result.getCacheLineData())
+        );
+        cacheViewArea.setText(cacheDetails);
+
+        String memoryDetails = String.format(
+                "Main memory line: %d%nData (by byte):%n%s",
+                result.getMainMemoryLineIndex(),
+                formatBlock(result.getMainMemoryBlock())
+        );
+        memoryViewArea.setText(memoryDetails);
+    }
+
+    private String formatBlock(String dataBlock) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < dataBlock.length(); i += BYTE_SIZE) {
+            if (i > 0) {
+                builder.append(' ');
+            }
+            builder.append(dataBlock, i, i + BYTE_SIZE);
+        }
+        return builder.toString();
     }
 
     private String formatAddress(String address) {

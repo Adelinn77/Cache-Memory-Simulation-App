@@ -75,6 +75,9 @@ public class CacheMemory {
         cl.setData(newData);
     }
 
+    public CacheLine getCacheLine(int index) {
+        return cacheLines.get(index);
+    }
 
     public List<CacheLine> getCacheLines() {
         return cacheLines;
