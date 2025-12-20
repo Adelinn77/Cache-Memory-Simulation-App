@@ -71,7 +71,7 @@ public class SimulatorController {
         titleLabel.setText("Simulation • Cache Memory(" + cache.getCacheSizeInBytes() + "B) • Main Memory(" + main.getSizeInKB() + "KB)");
 
         int addressSize = main.calculateAddressSize();
-        setAddressRaw("0".repeat(addressSize));   // will update hex + decoded too
+        setAddressRaw("0".repeat(addressSize));
 
         refreshCache();
         setupMainMemoryPagination();
@@ -306,25 +306,20 @@ public class SimulatorController {
         int pageIndex = (int) (blockIndex / PAGE_SIZE_BLOCKS);
         int rowInPage = (int) (blockIndex % PAGE_SIZE_BLOCKS);
 
-        // Load the correct page once
         memPagination.setCurrentPageIndex(pageIndex);
         loadMainMemoryPage(pageIndex);
 
-        // HIT/MISS indicator (probe BEFORE read)
         CacheResult probe = probeCache(raw);
         boolean hit = probe.getStatus() == CacheResultStatus.CACHE_HIT;
         setStatus(hit, hit ? "Cache hit" : probe.getData());
 
-        // Actual read
         String bits8 = cacheController.readDataFromAddress(raw);
         int v = Integer.parseInt(bits8, 2);
         dataHexField.setText(String.format("%02X", v));
 
-        // Refresh cache + main memory (read miss may have allocated into cache, but main stays same)
         refreshCache();
-        loadMainMemoryPage(pageIndex); // keep same page updated
+        loadMainMemoryPage(pageIndex);
 
-        // Re-select AFTER last load (so selection stays)
         memTable.getSelectionModel().clearAndSelect(rowInPage);
         memTable.scrollTo(rowInPage);
         memTable.requestFocus();
@@ -352,11 +347,9 @@ public class SimulatorController {
         int pageIndex = (int) (blockIndex / PAGE_SIZE_BLOCKS);
         int rowInPage = (int) (blockIndex % PAGE_SIZE_BLOCKS);
 
-        // Load the correct page once
         memPagination.setCurrentPageIndex(pageIndex);
         loadMainMemoryPage(pageIndex);
 
-        // HIT/MISS indicator (probe BEFORE write)
         CacheResult probe = probeCache(raw);
         boolean hit = probe.getStatus() == CacheResultStatus.CACHE_HIT;
         setStatus(hit, hit ? "Write HIT" : "Write MISS");
@@ -366,9 +359,8 @@ public class SimulatorController {
             cacheController.writeDataToAddress(raw, dataBits);
 
             refreshCache();
-            loadMainMemoryPage(pageIndex); // update the same page where we wrote
+            loadMainMemoryPage(pageIndex);
 
-            // Re-select AFTER last load (so selection stays)
             memTable.getSelectionModel().clearAndSelect(rowInPage);
             memTable.scrollTo(rowInPage);
             memTable.requestFocus();
@@ -399,7 +391,7 @@ public class SimulatorController {
             throw new IllegalArgumentException("Data must be 1-2 hex digits (00..FF)");
 
         int v = Integer.parseInt(hex, 16);
-        return String.format("%8s", Integer.toBinaryString(v)).replace(' ', '0'); // 8 bits
+        return String.format("%8s", Integer.toBinaryString(v)).replace(' ', '0');
     }
 
     private static List<String> bits32To4HexBytes(String bits32) {

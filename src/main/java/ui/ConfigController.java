@@ -34,7 +34,7 @@ public class ConfigController {
     private void onReset() {
         mainMemCombo.getSelectionModel().select("64 KB");
         cacheCombo.getSelectionModel().select("32 B");
-        hintLabel.setText("Pick sizes for main memory and cache memory, then start the simulation.");
+        hintLabel.setText("Choose sizes:");
     }
 
     @FXML

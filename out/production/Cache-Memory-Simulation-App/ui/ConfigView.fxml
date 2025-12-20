@@ -33,7 +33,7 @@
 
                 <Label styleClass="section-title" text="Configuration" />
 
-                <Label fx:id="hintLabel" styleClass="hint" text="Pick sizes, then start the simulation." />
+                <Label fx:id="hintLabel" styleClass="hint" text="Choose sizes:" />
 
                 <GridPane hgap="12" vgap="12">
                     <columnConstraints>
@@ -41,10 +41,10 @@
                         <ColumnConstraints hgrow="ALWAYS" />
                     </columnConstraints>
 
-                       <Label text="Main memory size:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                       <Label text="Main memory:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                     <ComboBox fx:id="mainMemCombo" maxWidth="260" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                       <Label text="Cache size:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                       <Label text="Cache memory:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                     <ComboBox fx:id="cacheCombo" maxWidth="260" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                <rowConstraints>
                   <RowConstraints />
