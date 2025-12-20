@@ -166,7 +166,6 @@
     -fx-background-radius: 10;
 }
 
-/* ===== Dark ComboBox ===== */
 .combo-box, .combo-box-base {
     -fx-background-color: rgba(255,255,255,0.08);
     -fx-background-radius: 10;
@@ -207,3 +206,48 @@
 .card {
     -fx-background-insets: 0;
 }
+
+.text-field {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-text-fill: rgba(232,241,255,0.92);
+    -fx-prompt-text-fill: rgba(232,241,255,0.45);
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 10;
+}
+
+.text-field:focused {
+    -fx-border-color: rgba(84, 206, 255, 0.45);
+}
+
+.top-bar {
+    -fx-background-color: rgba(12, 22, 40, 0.85);
+    -fx-background-radius: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 18, 0.35, 0, 8);
+}
+
+.status-chip {
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-font-weight: 800;
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(232,241,255,0.92);
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-background-color: rgba(255,255,255,0.06);
+}
+
+.status-hit {
+    -fx-background-color: rgba(46, 204, 113, 0.22);
+    -fx-border-color: rgba(46, 204, 113, 0.55);
+    -fx-text-fill: rgba(210,255,230,0.95);
+}
+
+.status-miss {
+    -fx-background-color: rgba(231, 76, 60, 0.22);
+    -fx-border-color: rgba(231, 76, 60, 0.55);
+    -fx-text-fill: rgba(255,220,220,0.95);
+}
+
+.table-row-cell:selected { -fx-background-color: rgba(84, 206, 255, 0.28); }
+

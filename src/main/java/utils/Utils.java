@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
 
@@ -20,11 +21,17 @@ public class Utils {
     public static String initializeCacheLineData(int blockSize) {
         return "00000000".repeat(blockSize);
     }
-    
-    public static String initializeMainMemoryLineData(int blockSize) {
-        return "00000000".repeat(blockSize);
-    }
 
+    public static String initializeMainMemoryLineData(int blockSize) {
+        StringBuilder sb = new StringBuilder(blockSize * BYTE_SIZE);
+        ThreadLocalRandom rnd = ThreadLocalRandom.current();
+
+        for (int b = 0; b < blockSize; b++) {
+            int value = rnd.nextInt(256);
+            sb.append(String.format("%8s", Integer.toBinaryString(value)).replace(' ', '0'));
+        }
+        return sb.toString();
+    }
     public static String generateRandomAddress(int addressSize) {
         Random random = new Random();
         StringBuilder address = new StringBuilder(addressSize);

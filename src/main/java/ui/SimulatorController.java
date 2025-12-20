@@ -11,6 +11,8 @@ import model.CacheMemory;
 import model.MainMemory;
 
 import java.util.List;
+
+import utils.AddressDecoder;
 import utils.Utils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,12 +24,18 @@ import java.util.Objects;
 
 import static utils.Utils.BLOCK_SIZE;
 import static utils.Utils.PAGE_SIZE_BLOCKS;
+import logic.CacheController;
+import model.CacheResult;
+import model.CacheResultStatus;
+import javafx.scene.control.Tooltip;
+
 
 public class SimulatorController {
 
 
     private CacheMemory cache;
     private MainMemory main;
+    private CacheController cacheController;
 
     @FXML private Label titleLabel;
 
@@ -37,18 +45,38 @@ public class SimulatorController {
     @FXML private Pagination memPagination;
     @FXML private TableView<MemRow> memTable;
     @FXML private TableColumn<MemRow, String> mAddr, mB0, mB1, mB2, mB3;
+    @FXML private TextField addressBinField;
+    @FXML private TextField addressHexField;
+    @FXML private TextField tagField, indexField, offsetField;
+    @FXML private TextField dataHexField;
+    @FXML private Label statusLabel;
+
+
+
+
+    private boolean syncing = false;
+
+
     private final ObservableList<CacheRow> cacheRows = FXCollections.observableArrayList();
     private static final double CACHE_TABLE_HEADER = 30;
     private static final int CACHE_COMPACT_MAX_ROWS = 16;
 
+
+
     public void setMemories(CacheMemory cache, MainMemory main) {
         this.cache = cache;
         this.main = main;
+        this.cacheController = new CacheController(cache, main);
 
         titleLabel.setText("Simulation • Cache Memory(" + cache.getCacheSizeInBytes() + "B) • Main Memory(" + main.getSizeInKB() + "KB)");
+
+        int addressSize = main.calculateAddressSize();
+        setAddressRaw("0".repeat(addressSize));   // will update hex + decoded too
+
         refreshCache();
         setupMainMemoryPagination();
     }
+
 
     @FXML
     private void initialize() {
@@ -79,6 +107,31 @@ public class SimulatorController {
         styleBitsColumn(cTag);
 
         cacheTable.setFixedCellSize(28);
+
+        cacheTable.setFixedCellSize(28);
+
+        addressBinField.textProperty().addListener((obs, oldV, newV) -> {
+            if (syncing) return;
+
+            if (!newV.matches("[01\\s]*")) {
+                syncing = true;
+                addressBinField.setText(oldV);
+                syncing = false;
+                return;
+            }
+
+            String raw = normalizeBin(newV);
+            String grouped = group4(raw);
+
+            int caret = addressBinField.getCaretPosition();
+            syncing = true;
+            addressBinField.setText(grouped);
+            addressBinField.positionCaret(Math.min(caret, grouped.length()));
+            syncing = false;
+
+            addressHexField.setText(raw.isEmpty() ? "" : binToHexFromRaw(raw));
+            updateDecodedFields(raw);
+        });
     }
 
     private <S> void styleBitsColumn(TableColumn<S, String> col) {
@@ -168,22 +221,20 @@ public class SimulatorController {
     @FXML
     private void onBack() {
         try {
-            URL fxml = Objects.requireNonNull(
-                    getClass().getResource("/ui/ConfigView.fxml"),
-                    "Cannot find /ui/ConfigView.fxml on classpath"
+            FXMLLoader loader = new FXMLLoader(
+                    Objects.requireNonNull(getClass().getResource("/ui/ConfigView.fxml"),
+                            "Cannot find /ui/ConfigView.fxml on classpath")
             );
-
-            Parent root = new FXMLLoader(fxml).load();
+            Parent root = loader.load();
 
             Stage stage = (Stage) titleLabel.getScene().getWindow();
-            Scene scene = stage.getScene();
-            scene.setRoot(root);
-
+            stage.getScene().setRoot(root);
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
 
     public static class CacheRow {
         SimpleStringProperty index, valid, tag, b0, b1, b2, b3;
@@ -209,12 +260,146 @@ public class SimulatorController {
         }
     }
 
+
+    @FXML private void onGoAddress() {
+        String raw = normalizeBin(addressBinField.getText());
+        int addressSize = main.calculateAddressSize();
+        if (!raw.matches("[01]+") || raw.length() != addressSize) {
+            titleLabel.setText("Invalid address. Must be " + addressSize + " bits.");
+            return;
+        }
+        titleLabel.setText("Simulation • Cache Memory(" + cache.getCacheSizeInBytes() + "B) • Main Memory(" + main.getSizeInKB() + "KB)");
+        long byteAddress = Long.parseLong(raw, 2);
+        long blockIndex = byteAddress / BLOCK_SIZE;
+        int pageIndex = (int) (blockIndex / PAGE_SIZE_BLOCKS);
+        memPagination.setCurrentPageIndex(pageIndex);
+        loadMainMemoryPage(pageIndex);
+        int rowInPage = (int) (blockIndex % PAGE_SIZE_BLOCKS);
+        memTable.getSelectionModel().select(rowInPage);
+        memTable.scrollTo(rowInPage);
+    }
+
+    @FXML
+    private void onRandomAddress() {
+        int addressSize = main.calculateAddressSize();
+        setAddressRaw(Utils.generateRandomAddress(addressSize));
+        titleLabel.setText("Simulation • Cache Memory(" + cache.getCacheSizeInBytes() + "B) • Main Memory(" + main.getSizeInKB() + "KB)");
+    }
+
+
+    @FXML
+    private void onRead() {
+        String raw = normalizeBin(addressBinField.getText());
+        int addressSize = main.calculateAddressSize();
+
+        if (!raw.matches("[01]+") || raw.length() != addressSize) {
+            titleLabel.setText("Invalid address. Must be " + addressSize + " bits.");
+            return;
+        }
+
+        titleLabel.setText("Simulation • Cache Memory(" + cache.getCacheSizeInBytes() +
+                "B) • Main Memory(" + main.getSizeInKB() + "KB)");
+
+        long byteAddress = Long.parseLong(raw, 2);
+        long blockIndex  = byteAddress / BLOCK_SIZE;
+
+        int pageIndex = (int) (blockIndex / PAGE_SIZE_BLOCKS);
+        int rowInPage = (int) (blockIndex % PAGE_SIZE_BLOCKS);
+
+        // Load the correct page once
+        memPagination.setCurrentPageIndex(pageIndex);
+        loadMainMemoryPage(pageIndex);
+
+        // HIT/MISS indicator (probe BEFORE read)
+        CacheResult probe = probeCache(raw);
+        boolean hit = probe.getStatus() == CacheResultStatus.CACHE_HIT;
+        setStatus(hit, hit ? "Cache hit" : probe.getData());
+
+        // Actual read
+        String bits8 = cacheController.readDataFromAddress(raw);
+        int v = Integer.parseInt(bits8, 2);
+        dataHexField.setText(String.format("%02X", v));
+
+        // Refresh cache + main memory (read miss may have allocated into cache, but main stays same)
+        refreshCache();
+        loadMainMemoryPage(pageIndex); // keep same page updated
+
+        // Re-select AFTER last load (so selection stays)
+        memTable.getSelectionModel().clearAndSelect(rowInPage);
+        memTable.scrollTo(rowInPage);
+        memTable.requestFocus();
+    }
+
+
+
+
+    @FXML
+    private void onWrite() {
+        String raw = normalizeBin(addressBinField.getText());
+        int addressSize = main.calculateAddressSize();
+
+        if (!raw.matches("[01]+") || raw.length() != addressSize) {
+            titleLabel.setText("Invalid address. Must be " + addressSize + " bits.");
+            return;
+        }
+
+        titleLabel.setText("Simulation • Cache Memory(" + cache.getCacheSizeInBytes() +
+                "B) • Main Memory(" + main.getSizeInKB() + "KB)");
+
+        long byteAddress = Long.parseLong(raw, 2);
+        long blockIndex  = byteAddress / BLOCK_SIZE;
+
+        int pageIndex = (int) (blockIndex / PAGE_SIZE_BLOCKS);
+        int rowInPage = (int) (blockIndex % PAGE_SIZE_BLOCKS);
+
+        // Load the correct page once
+        memPagination.setCurrentPageIndex(pageIndex);
+        loadMainMemoryPage(pageIndex);
+
+        // HIT/MISS indicator (probe BEFORE write)
+        CacheResult probe = probeCache(raw);
+        boolean hit = probe.getStatus() == CacheResultStatus.CACHE_HIT;
+        setStatus(hit, hit ? "Write HIT" : "Write MISS");
+
+        try {
+            String dataBits = hexByteToBits8(dataHexField.getText());
+            cacheController.writeDataToAddress(raw, dataBits);
+
+            refreshCache();
+            loadMainMemoryPage(pageIndex); // update the same page where we wrote
+
+            // Re-select AFTER last load (so selection stays)
+            memTable.getSelectionModel().clearAndSelect(rowInPage);
+            memTable.scrollTo(rowInPage);
+            memTable.requestFocus();
+
+        } catch (Exception e) {
+            titleLabel.setText("Write error: " + e.getMessage());
+        }
+    }
+
+
+
     private static String bits8ToHex(String bits8) {
         if (bits8 == null) return "";
         bits8 = bits8.trim();
         if (bits8.length() != 8) return bits8;
         int v = Integer.parseInt(bits8, 2);
         return String.format("%02X", v);
+    }
+
+    private static String hexByteToBits8(String hex) {
+        if (hex == null) throw new IllegalArgumentException("Empty data");
+
+        hex = hex.trim().toUpperCase();
+        if (hex.startsWith("0X")) hex = hex.substring(2);
+        hex = hex.replaceAll("\\s+", "");
+
+        if (!hex.matches("[0-9A-F]{1,2}"))
+            throw new IllegalArgumentException("Data must be 1-2 hex digits (00..FF)");
+
+        int v = Integer.parseInt(hex, 16);
+        return String.format("%8s", Integer.toBinaryString(v)).replace(' ', '0'); // 8 bits
     }
 
     private static List<String> bits32To4HexBytes(String bits32) {
@@ -229,5 +414,80 @@ public class SimulatorController {
                 bits8ToHex(bits32.substring(24, 32))
         );
     }
+
+    private void setAddressRaw(String rawBits) {
+        rawBits = normalizeBin(rawBits);
+
+        syncing = true;
+        addressBinField.setText(group4(rawBits));
+        syncing = false;
+
+        addressHexField.setText(rawBits.isEmpty() ? "" : binToHexFromRaw(rawBits));
+        updateDecodedFields(rawBits);
+    }
+
+
+    private static String normalizeBin(String s) {
+        if (s == null) return "";
+        return s.replaceAll("\\s+", "");
+    }
+
+    private static String group4(String raw) {
+        raw = normalizeBin(raw);
+        if (raw.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder(raw.length() + raw.length()/4);
+        for (int i = 0; i < raw.length(); i++) {
+            if (i > 0 && i % 4 == 0) sb.append(' ');
+            sb.append(raw.charAt(i));
+        }
+        return sb.toString();
+    }
+
+    private static String binToHexFromRaw(String rawBits) {
+        rawBits = normalizeBin(rawBits);
+        if (rawBits.isEmpty()) return "";
+        long v = Long.parseLong(rawBits, 2);
+        int hexDigits = (int) Math.ceil(rawBits.length() / 4.0);
+        return "0x" + String.format("%0" + hexDigits + "X", v);
+    }
+
+
+    private void updateDecodedFields(String rawBits) {
+        if (cache == null || main == null) return;
+
+        int addressSize = main.calculateAddressSize();
+        if (!rawBits.matches("[01]*") || rawBits.length() != addressSize) {
+            tagField.setText("");
+            indexField.setText("");
+            offsetField.setText("");
+            addressHexField.setText("");
+            return;
+        }
+
+        String tag    = AddressDecoder.extractTag(rawBits, cache.getTagSize());
+        String index  = AddressDecoder.extractIndex(rawBits, cache.getIndexSize());
+        String offset = AddressDecoder.extractOffset(rawBits);
+
+        tagField.setText(group4(tag));
+        indexField.setText(index);
+        offsetField.setText(offset);
+
+        addressHexField.setText(binToHexFromRaw(rawBits));
+    }
+
+    private void setStatus(boolean hit, String detail) {
+        statusLabel.getStyleClass().removeAll("status-hit", "status-miss");
+        statusLabel.getStyleClass().add(hit ? "status-hit" : "status-miss");
+        statusLabel.setText(hit ? "HIT" : "MISS");
+        statusLabel.setTooltip(detail == null || detail.isBlank() ? null : new Tooltip(detail));
+    }
+
+    private CacheResult probeCache(String addrRaw) {
+        String offset = AddressDecoder.extractOffset(addrRaw);
+        String index  = AddressDecoder.extractIndex(addrRaw, cache.getIndexSize());
+        String tag    = AddressDecoder.extractTag(addrRaw, cache.getTagSize());
+        return cache.findInCache(index, offset, tag);
+    }
+
 
 }

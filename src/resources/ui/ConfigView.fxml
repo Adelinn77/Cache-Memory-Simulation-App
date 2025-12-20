@@ -26,24 +26,18 @@
 
     <center>
         <StackPane>
-            <!-- Full-size card -->
             <VBox maxHeight="Infinity" maxWidth="Infinity" spacing="14" styleClass="card">
                 <padding>
                     <Insets bottom="22" left="22" right="22" top="22" />
                 </padding>
 
-                <!-- Title -->
                 <Label styleClass="section-title" text="Configuration" />
 
-                <!-- Hint directly under title -->
                 <Label fx:id="hintLabel" styleClass="hint" text="Pick sizes, then start the simulation." />
 
-                   <!-- Form -->
                 <GridPane hgap="12" vgap="12">
                     <columnConstraints>
-                        <!-- label col -->
                         <ColumnConstraints hgrow="NEVER" minWidth="180" />
-                        <!-- combo col -->
                         <ColumnConstraints hgrow="ALWAYS" />
                     </columnConstraints>
 
@@ -58,13 +52,11 @@
                </rowConstraints>
                 </GridPane>
 
-                <!-- Buttons left -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Button onAction="#onReset" styleClass="btn-secondary" text="Reset" textAlignment="CENTER" />
                     <Button onAction="#onStart" styleClass="btn-primary" text="Start" textAlignment="CENTER" />
                 </HBox>
 
-                <!-- Keep content up top like in screenshot -->
                 <Region VBox.vgrow="ALWAYS" />
             </VBox>
         </StackPane>
