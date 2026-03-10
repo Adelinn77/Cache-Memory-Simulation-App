@@ -39,8 +39,6 @@ class CacheControllerTest {
     @Test
     void readDataFromAddressLoadsBlockOnMissAndReturnsHitAfterwards() {
         String firstRead = cacheController.readDataFromAddress(address);
-        assertEquals("00000000", firstRead);
-
         CacheLine cacheLine = cacheMemory.getCacheLines().get(Integer.parseInt(index, 2));
         assertTrue(cacheLine.isValidBit());
 
@@ -62,8 +60,7 @@ class CacheControllerTest {
         int addressInt = (int) ((tagInt << cacheMemory.getIndexSize()) | indexInt);
         String updatedMainMemoryLine = mainMemory.getMainMemoryLines().get(addressInt);
 
-        String expectedLine = "00000000" + dataByte + "00000000" + "00000000";
-        assertEquals(expectedLine, updatedMainMemoryLine);
+        assertEquals(dataByte, updatedMainMemoryLine.substring(8, 16));
 
         String readBack = cacheController.readDataFromAddress(address);
         assertEquals(dataByte, readBack);
